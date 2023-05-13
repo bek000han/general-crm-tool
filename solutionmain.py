@@ -1,21 +1,20 @@
 from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
-import sqlite3
+from tkinter import Text
 import tkinter as tk
+import sqlite3
 from datetime import datetime
 import threading
 import time
 from time import strftime
 import smtplib
-from tkinter import Text
 from email.message import EmailMessage
 from itertools import product
 
 ##################################### FOUNDATION / MAIN WINDOW #########################################
 
 def MainProgramStart():
-    
     global root
     root = Tk()
     root.title("Login Form")
@@ -23,11 +22,9 @@ def MainProgramStart():
 
 
 def DestroyPage():
-    
     currentframe.destroy()
 
 def HomeButtonCondition():
-    
     #documentation for state module
     teambutton.config(state = tk.NORMAL)
     eventsbutton.config(state = tk.NORMAL)
@@ -37,7 +34,6 @@ def HomeButtonCondition():
     noticebutton.config(bg = 'white')
 
 def TeamButtonCondition():
-    
     homebutton.config(state = tk.NORMAL)
     eventsbutton.config(state = tk.NORMAL)
     noticebutton.config(state = tk.NORMAL)
@@ -46,7 +42,6 @@ def TeamButtonCondition():
     noticebutton.config(bg = 'white')
 
 def EventsButtonCondition():
-    
     homebutton.config(state = tk.NORMAL)
     teambutton.config(state = tk.NORMAL)
     noticebutton.config(state = tk.NORMAL)
@@ -55,7 +50,6 @@ def EventsButtonCondition():
     noticebutton.config(bg = 'white')
 
 def NoticeButtonCondition():
-    
     homebutton.config(state = tk.NORMAL)
     teambutton.config(state = tk.NORMAL)
     eventsbutton.config(state = tk.NORMAL)
@@ -64,22 +58,17 @@ def NoticeButtonCondition():
     eventsbutton.config(bg = 'white')
 
 def InformationAboutProgram():
-    
-    #https://stackoverflow.com/questions/53240256/python-new-tkinter-window-appears-when-messagebox-is-shown
     master = Tk()
     master.withdraw()
-    #documentation for messagebox
     messagebox.showinfo("Program Specific Information", "The program was designed for the CS SL course, the 'Solution' Internal Assessment.\nThis was created by a Haileybury Astana student and not subject to redistribution.")
 
 def DummyHomePage(): 
-    
     global homeframe, currentframe, homeheader4, homeheader5
     
     homebutton.config(bg = '#4e5a64')
     homeframe = Frame(root2)
     currentframe = homeframe
     homeframe.pack(side = TOP)
-    #https://www.geeksforgeeks.org/how-to-set-border-of-tkinter-label-widget/ for border
     
     homeheader1 = Label(homeframe, text = "Homepage", font = ('arial', 20), width = 53, bd = 4, relief = "ridge")
     homeheader1.pack(side = TOP, pady = (0,35))
@@ -98,7 +87,6 @@ def DummyHomePage():
     Date()
     
 def HomePage(): 
-    
     HomeButtonCondition()
     DestroyPage()
     homebutton.config(state = tk.DISABLED)
@@ -127,7 +115,6 @@ def HomePage():
     Date()
     
 def TeamFrame():
-
     TeamButtonCondition()
     DestroyPage()
     teambutton.config(state = tk.DISABLED)
@@ -150,7 +137,6 @@ def TeamFrame():
     CheckDatabase()
     
 def EventsFrame():
-    
     EventsButtonCondition()
     DestroyPage()
     eventsbutton.config(state = tk.DISABLED)
@@ -166,7 +152,6 @@ def EventsFrame():
     eventsheader.pack(side = TOP)
 
 def NoticeFrame(): 
-    
     NoticeButtonCondition()
     DestroyPage()
     noticebutton.config(state = tk.DISABLED)
@@ -201,7 +186,6 @@ def NoticeFrame():
     
     
 def MenuButtons():
-    
     global root2, homebutton, teambutton, eventsbutton, noticebutton, recipientsfull
 
     root2 = Tk()
@@ -227,14 +211,12 @@ def MenuButtons():
 ##################### REAL TIME CLOCK FOR HOMEFRAME ###########################
     
 def Clock():
-    #https://docs.python.org/3/library/time.html documentation
     global homeheader4
     time = strftime('%H:%M:%S %p')
     homeheader4.config(text = time)
     homeheader4.after(1000, Clock)
     
 def Date():
-    #https://docs.python.org/3/library/time.html documentation
     global homeheader5
     date = strftime('%d/%m/%Y %A')
     homeheader5.config(text = date)
@@ -244,7 +226,6 @@ def Date():
 ######################## NOTICE FORWARDER ###########################################
 
 def GetEmails():
-    
     global emails
     conn = sqlite3.connect('clientsquad.db')
     cur = conn.cursor()
@@ -255,12 +236,9 @@ def GetEmails():
     conn.commit()
     conn.close()
 
-#smtp documentation
 def SendMail():
-    #tuple documentation
     GetEmails()
     recipients = [i for sub in emails for i in sub]
-    #https://www.w3schools.com/python/ref_string_join.asp
     recipientsfull = ", ".join(recipients)
     
     sender = clientemail[0]
@@ -268,7 +246,6 @@ def SendMail():
     subject = subjectentry.get()
     message = bodyentry.get("1.0",END)
     print(recipientsfull)
-    #https://stackoverflow.com/questions/7232088/python-subject-not-shown-when-sending-email-using-smtplib-module   2nd answer
 
     notice = EmailMessage()
     notice.set_content(message)
@@ -278,7 +255,6 @@ def SendMail():
     
     try:
         email = smtplib.SMTP('smtp.office365.com', 587)
-    #https://www.tutorialexample.com/fix-smtplib-smtpnotsupportederror-smtp-auth-extension-not-supported-by-server-python-smtp-tutorial/
         email.ehlo()
         email.starttls()
         email.ehlo()
@@ -287,8 +263,6 @@ def SendMail():
         email.send_message(notice)
         email.quit()
         print("Email sent.")
-        
-    #documentation for errors
     except smtplib.SMTPAuthenticationError:
         messagebox.showerror("Error", "Incorrect email credentials.")
 
@@ -311,7 +285,6 @@ def ClientDatabase():
     conn.close()
     
 def RegisterClient():
-    
     if usernameentry.get() == "" or passwordentry.get() == "" or firstnameentry.get() == "" or emailentry.get() == "":
         messagebox.showerror("Error", "Do not leave blank fields.")
     else:
@@ -339,7 +312,6 @@ def RegisterClient():
 
 
 def LoginClient():
-    
     global homepagename, displayname, clientemail
     
     homepagename = ""
@@ -375,7 +347,6 @@ def LoginClient():
 
     
 def LoginFrame():
-    
     global flogin, usernameentry, passwordentry, lusername, lpassword
     
     root.title("Login Form")
@@ -403,7 +374,6 @@ def LoginFrame():
 
 
 def RegisterFrame():
-    
     global fregister, usernameentry, passwordentry, emailentry, firstnameentry
     
     root.title("Register Form")
@@ -442,14 +412,12 @@ def RegisterFrame():
 
 
 def GoToLogin():
-    
     fregister.destroy()
     LoginFrame()
     usernameentry.delete(0, END)
     passwordentry.delete(0, END)
 
 def GoToRegister():#add the limit of users
-
     conn = sqlite3.connect('client.db')
     cur = conn.cursor()
 
@@ -471,9 +439,7 @@ def GoToRegister():#add the limit of users
     
 ################################# DATABASE MNGT PART ######################################################
 
-#documenttaion
 def TeamDatabase():
-
         conn = sqlite3.connect('clientsquad.db')
         cur = conn.cursor()
 
@@ -482,10 +448,7 @@ def TeamDatabase():
         conn.commit()
         conn.close()
 
-
-#documentation
 def teamclearentrydef():
-    
         teamidentry.delete(0, END)
         teamfnentry.delete(0, END)
         teamlnentry.delete(0, END)
@@ -495,12 +458,11 @@ def teamclearentrydef():
         teamemailentry.insert(0, "@haileyburyastana.kz")
 
 def CheckDatabase():
-    
     teamclearentrydef()
     teamtree.delete(*teamtree.get_children())
     conn = sqlite3.connect('clientsquad.db')
     cur = conn.cursor()
-    #john elder
+    
     cur.execute("""create table if not exists squad(firstname text, lastname text, birthyear integer, gender text, email text)""")
     cur.execute("select rowid, * from squad")
     
@@ -513,10 +475,7 @@ def CheckDatabase():
     conn.commit()
     conn.close()
 
-
-#documentation + geekforgeeks
 def teamaddrecord():
-
     conn = sqlite3.connect('clientsquad.db')
     cur = conn.cursor()
     vteamfnentry = teamfnentry.get()
@@ -536,7 +495,6 @@ def teamaddrecord():
     CheckDatabase()
 
 def checkforstudent():
-
     teamclearentrydef()
     teamtree.delete(*teamtree.get_children())
     
@@ -545,7 +503,6 @@ def checkforstudent():
 
     vlastnameentry = lastnamequeryentry.get()
     
-    #john elder
     cur.execute("select rowid, * from squad where lastname = ?", (vlastnameentry,))
     
     records = cur.fetchall()
@@ -557,9 +514,7 @@ def checkforstudent():
     conn.commit()
     conn.close()
 
-#john elder
 def teamselectedrecord(e):
-    
     teamclearentrydef()
     if teamtree.focus():
         
@@ -577,7 +532,6 @@ def teamselectedrecord(e):
             print('selection process')
 
 def teamupdaterecord():
-
     conn = sqlite3.connect('clientsquad.db')
     cur = conn.cursor()
     
@@ -600,9 +554,7 @@ def teamupdaterecord():
     teamclearentrydef()
     CheckDatabase()
 
-#documentation add sqlite function
 def teamdeleteallrecords():
-
     conn = sqlite3.connect('clientsquad.db')
     cur = conn.cursor()
     cur.execute('drop table squad')
@@ -611,9 +563,7 @@ def teamdeleteallrecords():
 
     CheckDatabase()
     
-#documentation add sqlite function
 def teamdeleterecord():
-
     selectedid = teamidentry.get()
     
     conn = sqlite3.connect('clientsquad.db')
@@ -630,7 +580,6 @@ def teamdeleterecord():
     CheckDatabase()
     
 def TeamEntryFrame():
-    
         global teamidentry, teamfnentry, teamlnentry, teambirthyearentry, teamgenderentry, teamemailentry
         teamentryframe = LabelFrame(teammanagementframe)
         teamentryframe.pack(side = LEFT)
@@ -671,7 +620,6 @@ def TeamEntryFrame():
 
 
 def TeamButtonFrame():
-    
         global lastnamequeryentry
         
         teambuttonframe = LabelFrame(teammanagementframe)
@@ -696,32 +644,25 @@ def TeamButtonFrame():
         teamclearentry.grid(row = 7, column = 0, pady = 16, padx = 5)
 
 def TeamManagementFrame():
-    
         global teammanagementframe
         teammanagementframe = Frame(root2)
         teammanagementframe.pack()
 
 def TeamTreeview():
-    
         global teamtree
-        
-#documentation
+
         teamtreeviewframe = Frame(teammanagementframe)
         teamtreeviewframe.pack(side = LEFT)
         teamstyle = ttk.Style(teamtreeviewframe)
         teamstyle.theme_use('default')
         teamstyle.configure("Treeview", rowheight = 33)
 
-
-#geeks for geeks
         teamscroll = Scrollbar(teamtreeviewframe)
         teamscroll.pack(side = RIGHT, fill = Y)
         teamtree = ttk.Treeview(teamtreeviewframe, style = "Treeview", yscrollcommand = teamscroll.set, selectmode = "extended")
         teamscroll.config(command = teamtree.yview)
         teamtree.pack(side = LEFT)
 
-
-#documentation
         teamtree['columns'] = ("studentID", "firstname", "lastname", "birthyear", "gender", "email")
         teamtree.column("#0", width = 0, stretch = NO)
         teamtree.column("studentID", width = 60, anchor = CENTER) 
@@ -738,7 +679,7 @@ def TeamTreeview():
         teamtree.heading("birthyear", text = "birthyear", anchor = CENTER)
         teamtree.heading("gender", text = "gender", anchor = CENTER)
         teamtree.heading("email", text = "email address", anchor = CENTER)
-#johnelder
+
         teamtree.bind("<ButtonRelease-1>", teamselectedrecord)
 
 
